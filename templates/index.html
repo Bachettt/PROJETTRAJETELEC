@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    
 </head>
 
 <body>
@@ -66,37 +67,46 @@
       <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
       <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
       <script src="js/scripts.js"></script>
-    
-      <script>
-    // Access the JSON data passed from Flask
-    var jsonData = {{ data|tojson }};
+ 
+ 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/json-formatter/2.3.1/json-formatter.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/json-formatter/2.3.1/json-formatter.min.css" rel="stylesheet" type="text/css">
+   
+<script>
+  // Access the JSON data passed from Flask
+  var jsonData = {{ data|tojson }};
 
-    // Display the JSON data on the page
-    var outputDiv = document.getElementById('output');
-    outputDiv.innerHTML = JSON.stringify(jsonData, null, 2);
+  // Get the output element where you want to display the formatted JSON
+  var outputDiv = document.getElementById('output');
 
-    var namingList = {{ naming_string|safe }};
-    var selectElement = document.getElementById('carSelect');
+  // Display the JSON data on the page
+  outputDiv.textContent = JSON.stringify(jsonData, null, 2);
 
-    // Add an event listener to the carSelect dropdown menu
-    selectElement.addEventListener('change', function() {
-        var selectedMake = selectElement.value;  // Get the selected make from the dropdown menu
-        var selectedEntry = jsonData.find(function(entry) {
-            return entry.make === selectedMake;  // Find the entry with the selected make
-        });
+  var namingList = {{ namingList|tojson }};
+  var selectElement = document.getElementById('carSelect');
 
-        // Display the selected entry in the output <pre> element
-        outputDiv.innerHTML = JSON.stringify(selectedEntry, null, 2);
+  // Add an event listener to the carSelect dropdown menu
+  selectElement.addEventListener('change', function() {
+    var selectedMake = selectElement.value;  // Get the selected make from the dropdown menu
+    var selectedEntry = namingList.find(function(entry) {
+      return entry.marque === selectedMake;  // Find the entry with the selected make
     });
 
-    // Populate the carSelect dropdown menu
-    for (var i = 0; i < namingList.length; i++) {
-        var option = document.createElement('option');
-        option.value = namingList[i];
-        option.text = namingList[i];
-        selectElement.appendChild(option);
-    }
+    // Display the selected entry in the output <pre> element
+    outputDiv.textContent = JSON.stringify(selectedEntry, null, 2);
+  });
+
+  // Populate the carSelect dropdown menu
+  for (var i = 0; i < namingList.length; i++) {
+    var option = document.createElement('option');
+    option.value = namingList[i].marque;
+    option.textContent = namingList[i].marque;
+    selectElement.appendChild(option);
+  }
+  
+  
 </script>
+
 
     
     <script>
